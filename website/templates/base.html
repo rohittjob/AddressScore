@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Snapdeal</title>
+
+
+    <link rel="stylesheet" href="{% static "css/bootstrap.css" %}" type="text/css"/>
+    <link rel="stylesheet" href="{% static "css/fileinput.css" %}" type="text/css"/>
+    <link rel="stylesheet" href="{% static "css/dashboard.css" %}" type="text/css"/>
+    <link rel="stylesheet" href="{% static "css/scroll.css" %}" type="text/css"/>
+
+   
+    
+  </head>
+
+
+
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+
+         
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="">  </a>
+        </div>
+        
+
+      </div>
+    </nav>
+
+    <div class="alert alert-danger hidden" role="alert" id="invalid">
+<div class="row">
+      &nbsp; &nbsp;The entered pincode does not belong to the given (country,state,city) combination.  Please enter a valid pincode
+ </div>
+ </div>
+
+<div class="col-md-2">
+</div>
+
+<div class="col-md-7">
+ 
+    <br></br>
+      
+  <form  class="form" method="post" action="/check/" id="check_form">
+    {% csrf_token %}
+    <br></br>
+
+          <h2 class="form-signin-heading">Address Validation</h2>
+          Please complete this address form
+          <br></br>
+
+    <div class="form-group">
+
+      <div class="row">
+        <div class="col-md-6">
+         <div class="container-fluid">
+              <label for="building">Building name/no </label>
+              <input type="text"  title="Like '102, Alwar Apartments'"class="form-control" placeholder="Enter the building name or number"  name="building"  required>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="container-fluid">
+              <label for="street" >Street Name</label>
+              <input type="text" title="ex. Jail Road"class="form-control" placeholder="Enter the street name"  name="street"  required>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+         <div class="container-fluid">
+             <label for="country">Country</label>
+              <div class="dropdown">
+                  <div class="dropdown">               
+                  <select class="form-control" id="country_drop" required>
+                    <option value disabled selected style="display:none">-- Select --</option>   
+
+                    <option value="India">India</option>   
+              </select>
+            </div>
+              </div>
+              </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="container-fluid">
+              <label for="pincode" >Pincode</label>
+              <input type="text" title="ex. 211004, 440027 etc." id="pincode" class="form-control" placeholder="Enter your 6-digit pincode" name="pincode" required pattern="[0-9]{6}">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="container-fluid">           
+                <label for="state" >State</label>
+                <div class="dropdown">               
+                <select class="form-control" id="state_drop" required>
+                  <option value disabled selected style="display:none">-- Select --</option>   
+
+                  
+              </select>
+            </div>
+          </div>
+        </div>   
+        <div class="col-md-6">
+          <div class="container-fluid">           
+                <label for="city" >City</label>
+              
+                <div class="dropdown">               
+                <select class="form-control" id="city_drop" required>
+                  <option value disabled selected style="display:none">-- Select --</option>   
+
+              </select>
+            </div>
+          </div>
+        </div>   
+
+        
+          </div>
+
+      <div class="row">
+        
+      </div>
+
+        
+    </div>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit" >Continue</button>
+
+  </form>
+
+
+</div>
+
+
+
+
+    <script src="{% static "javascript/jquery.min.js" %}"></script>
+    <script src="{% static "javascript/bootstrap.min.js" %}"></script>
+
+<script>
+
+       $("#country_drop").change(function () {
+          var country = this.value;
+          $.get('/country/', {country: country},
+          function(json){
+
+            var states = json.states;
+            $('#state_drop').children().remove().end()
+            $('#state_drop').append('<option value disabled selected style="display:none">-- Select --</option>');  
+            for(i=0; i<states.length; i++)
+              $('#state_drop').append('<option value="' + states[i] + '">' + states[i] + '</option>') ;
+            
+                
+         });
+       });
+
+       $("#state_drop").change(function () {
+          var state = this.value;
+          $.get('/state/', {state: state},
+          function(json){
+
+            var cities = json.cities;
+            $('#city_drop').children().remove().end()
+            $('#city_drop').append('<option value disabled selected style="display:none">-- Select --</option>');  
+            for(i=0; i<cities.length; i++)
+              $('#city_drop').append('<option value="' + cities[i] + '">' + cities[i] + '</option>') ;
+            
+                
+         });
+       });
+
+
+      $("#check_form").submit(function (event) {
+          event.preventDefault(); 
+           var theform = this;
+            var city = $("#city_drop").val();
+            var pincode = $("#pincode").val();
+           $.get('/pincode/', {city: city, pincode: pincode},
+            function(json){
+            if(!json.valid) {
+                $("#invalid").removeClass("hidden");
+               
+            }
+            else {
+              theform.submit();
+            }
+                
+         });
+
+
+          
+
+
+      });
+     
+  </script>
+
+
+     
+
+  </body>
+</html>

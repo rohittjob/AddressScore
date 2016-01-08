@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Hackathon</title>
+
+
+    <link rel="stylesheet" href="{% static "css/bootstrap.css" %}" type="text/css"/>
+    <link rel="stylesheet" href="{% static "css/fileinput.css" %}" type="text/css"/>
+    <link rel="stylesheet" href="{% static "css/dashboard.css" %}" type="text/css"/>
+    
+  </head>
+
+
+
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+
+         
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href=""></a>
+        </div>
+        
+      </div>
+    </nav>
+
+<div class="col-md-2">
+</div>
+
+<div class="col-md-7">
+ 
+    <br></br>
+      
+  <form name="userForm"  class="form" method="post" action="/">
+    <br></br>
+          {% if blocked %}
+            <h2 class="form-signin-heading">No, the area is blocked for delivery.</h2>
+          {% else %}
+            <h2 class="form-signin-heading">Yes, the area is feasible for delivery.</h2>
+          {% endif %}
+          <br></br>
+          <h3 class="form-signin-heading">Pincode score : {{ score }}</h3>
+          <h3 class="form-signin-heading">Minimum score for feasibility : {{ threshold }}</h3>
+
+          <br></br>
+
+  </form>
+
+
+</div>
+
+    <script src="{% static "javascript/jquery.min.js" %}"></script>
+    <script src="{% static "javascript/bootstrap.min.js" %}"></script>
+    
+
+
+    
+     
+
+  </body>
+</html>
